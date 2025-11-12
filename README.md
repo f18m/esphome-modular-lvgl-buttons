@@ -34,7 +34,7 @@ Grag a file from the demos directory that matches your screen and move it up wit
 cp ./esphome-modular-lvgl-buttons/hardware/guition-esp32-s3-4848s040.yaml .
 ```
 
-Edit the file and change the name then build a deploy to your screen using serial or over Wi-Fi.
+Edit the file and change the name then build and deploy to your screen using serial or over Wi-Fi.
 
 ```
 esphome run guition-esp32-s3-4848s040.yaml --device 192.168.1.100
