@@ -48,7 +48,7 @@ lvgl:
                       align: left_mid
                       text_font: nunito_20
                       text_color: misty_blue
-                      text: " "
+                      text: "Booting..."
                   - spinner:
                       id: boot_homeassistant_spiner
                       width: 50
@@ -81,7 +81,7 @@ lvgl:
                       y: 0
                       text_font: nunito_20
                       text_color: misty_blue
-                      text: " "
+                      text: "Sync with HA..."
                   - bar:
                       id: boot_synchronization_bar
                       y: 0
