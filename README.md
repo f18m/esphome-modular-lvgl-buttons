@@ -3,8 +3,8 @@
 ## Supported Devices
 * Guition `ESP32-4848s040` 4.0" with capacitive touch 120v/220v relays and built in power supply + USB-C [AliExpress Link](https://www.aliexpress.com/item/3256806436431838.html).
 * Guition `ESP32-JC8048W550` 5.0" with capacitive touch USB-C [AliExpress Link](https://www.aliexpress.com/item/3256806546911788.html).
-* Guition `ESP32-jc4827w543C` 4.3" with capacitive touch and USB-C  [AliExpress Link]([https://www.aliexpress.com/item/3256806543342794.html]).
-* Sunton `ESP32-8048S043` 4.3" with capacitive touch and USB-C [AliExpress Link]([https://www.aliexpress.com/item/3256807713569037.html])
+* Guition `ESP32-jc4827w543C` 4.3" with capacitive touch and USB-C  [AliExpress Link](https://www.aliexpress.com/item/3256806543342794.html).
+* Sunton `ESP32-8048S043` 4.3" with capacitive touch and USB-C [AliExpress Link](https://www.aliexpress.com/item/3256807713569037.html)
 * Sunton `ESP32-8048S050` 5.0" with capacitive touch and USB-C [AliExpress Link](https://www.aliexpress.com/item/1005004952694042.html).
 * Sunton `ESP32-8048s070` 7.0" with capacitive touch and USB-C [AliExpress Link](https://www.aliexpress.com/item/3256807882909237.html).
 * Elecrow CrowPanel `DIS05035H` (v2.2) 3.5" with resistive touch and USB-C  [Manufacturer's Link](https://www.elecrow.com/esp32-display-3-5-inch-hmi-display-spi-tft-lcd-touch-screen.html).
