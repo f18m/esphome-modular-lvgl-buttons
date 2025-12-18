@@ -2,6 +2,8 @@ lvgl:
   page_wrap: true
   theme:
     obj:
+      width: 100%
+      height: 100%    
       border_width: 0
       scrollable: false      
       pad_all: 0

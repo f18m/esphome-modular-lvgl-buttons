@@ -25,13 +25,13 @@ substitutions:
   screen_night_minute: '0'
 
   # Screen Size
-  screen_height: 600
-  screen_width: 1024
+  screen_height: 720
+  screen_width: 720
 
 esphome:
-  name: "waveshare-esp32-p4-touch-lcd-7b"
-  friendly_name: "waveshare-esp32-p4-wifi6-touch-lcd-7b"
-  comment: "Waveshare esp32-p4-wifi6-touch-lcd-7b 1024px X 600px Smart Screen"
+  name: "waveshare-esp32-p4-86-panel"
+  friendly_name: "Waveshare ESP32-P4-86-Panel"
+  comment: "Waveshare ESP32-P4-86-Panel 720px * 720px Smart Screen"
   on_boot:
     - priority: 400
       then:
@@ -78,9 +78,9 @@ packages:
   # theme_style: !include esphome-modular-lvgl-buttons/common/theme_style_debug.yaml
   # Include if your touch screen has a backlight. Also sets the time from HA
   backlight: !include esphome-modular-lvgl-buttons/common/backlignt_time.yaml
-  
+
   # Harware description file
-  hardware: !include esphome-modular-lvgl-buttons/hardware/waveshare-esp32-p4-wifi6-touch-lcd-7b.yaml
+  hardware: !include esphome-modular-lvgl-buttons/hardware/waveshare-esp32-p4-86-panel.yaml
   
   # Basic boot screen with ESPHome logo and device diagnostic info
   loading_screen: !include esphome-modular-lvgl-buttons/pages/loading_480px.yaml
@@ -107,7 +107,7 @@ packages:
     vars:
       uid: button_2
       row: 0
-      column: 6
+      column: 2
       text: 00:00
       click_page: info_screen
       
@@ -146,7 +146,7 @@ lvgl:
   buffer_size: 100%
   pages:
     - id: main_page
-      layout: 4x7
+      layout: 4x4
       styles: page_style
       <<: !include esphome-modular-lvgl-buttons/widgets/swipe_navigation.yaml
       widgets:
@@ -156,7 +156,7 @@ lvgl:
               grid_cell_x_align: stretch
               grid_cell_y_align: stretch
               grid_cell_row_pos: 3
-              grid_cell_column_pos: 6
+              grid_cell_column_pos: 3
               grid_cell_row_span: 1
               grid_cell_column_span: 1
               outline_width: 1   # debug code - This is for visualizing boundries remove for production
@@ -166,7 +166,7 @@ lvgl:
                     text_font: $text_font
                     align: center
                     text_color: white
-                    text: "Cell 3,6"
+                    text: "Cell 3,3"
   
 # If you want to use other icons add them to the list here
 font:
