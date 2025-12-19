@@ -19,7 +19,13 @@ esp32:
 
 esp_ldo:
   - channel: 3
+    id: dsi_phy_enable
     voltage: 2.5V
+    adjustable: True
+  - channel: 4
+    id: sd_card_power
+    voltage: 2.7V
+    adjustable: True
 
 psram:
   mode: hex
@@ -67,7 +73,9 @@ i2c:
     sda: GPIO7  
     scl: GPIO8  
     scan: true
-    frequency: 400kHz 
+    frequency: 400kHz
+    sda_pullup_enabled: False
+    scl_pullup_enabled: False
 
 # -------------------------------------------
 # Touchscreen
@@ -105,9 +113,13 @@ lvgl:
 audio_dac:
   - platform: es8311
     id: es8311_dac
+    i2c_id: bus_a
+    address: 0x18
     bits_per_sample: 16bit
-    sample_rate: 16000
+    sample_rate: 44100
+    use_mclk: True
     use_microphone: True
+    mic_gain: 24DB
 
 i2s_audio:
   - id: i2s_output
@@ -119,12 +131,14 @@ speaker:
   - platform: i2s_audio
     i2s_audio_id: i2s_output
     id: p4_speaker
-    i2s_dout_pin: GPIO9
+    i2s_dout_pin: GPIO09
     dac_type: external
-    sample_rate: 16000
+    sample_rate: 44100
     bits_per_sample: 16bit
-    channel: stereo
+    channel: left
     audio_dac: es8311_dac
+    buffer_duration: 1000ms
+    i2s_mode: primary
   - platform: mixer
     id: mixer_speaker_id
     output_speaker: p4_speaker
@@ -138,27 +152,38 @@ speaker:
     id: announcement_spk_resampling_input
     output_speaker: announcement_spk_mixer_input
 
+switch:
+  - platform: gpio
+    pin: GPIO11 #PA-CTRL
+    name: "Speaker enable"
+    restore_mode: ALWAYS_ON
+    id: speaker_enable_switch
+    inverted: False
+
 media_player:
   - platform: speaker
     name: "Speaker Media Player"
     id: speaker_media_player_id
+    task_stack_in_psram: True
+    buffer_size: 1000000
+    codec_support_enabled: True
+    volume_initial: 70%
+    volume_max: 70%
     media_pipeline:
         speaker: media_spk_resampling_input
         num_channels: 2
     announcement_pipeline:
         speaker: announcement_spk_resampling_input
+        sample_rate: 44100
         num_channels: 1
         
 microphone:
   - platform: i2s_audio
-    id: p4_microphone
-    i2s_din_pin: GPIO11
-    sample_rate: 16000
-    bits_per_sample: 16bit
+    id: external_mic
+    i2s_audio_id: i2s_output
+    i2s_mode: primary
     adc_type: external
-
-#audio_adc:
-#  - platform: es8311
-#    id: es8311_adc
-#    bits_per_sample: 16bit
-#    sample_rate: 16000
+    i2s_din_pin: GPIO48
+    sample_rate: 16000
+    bits_per_channel: 16bit
+    channel: stereo
