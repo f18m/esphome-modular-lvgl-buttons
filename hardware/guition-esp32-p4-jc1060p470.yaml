@@ -49,13 +49,9 @@ esp32_hosted:
 # Internal outputs
 # -------------------------------------------
 output:
-  # Backlight LED
-  - platform: ledc
+  - id: gpio_backlight_pwm
+    platform: ledc
     pin: GPIO23
-    id: gpio_backlight_pwm
-    frequency: 100Hz
-    min_power: 0.03
-    zero_means_zero: true
 
 light:
   - platform: monochromatic
@@ -64,6 +60,8 @@ light:
     icon: mdi:lightbulb-on
     id: display_backlight
     restore_mode: ALWAYS_ON
+    default_transition_length: 0s
+    gamma_correct: 1.0
     
 # -------------------------------------------
 # i2c bus
@@ -85,10 +83,6 @@ touchscreen:
     id: my_touchscreen
     # reset_pin: GPIO23  # Shared with backlight
     interrupt_pin: GPIO21
-    transform:
-      swap_xy: false
-      mirror_x: false
-      mirror_y: false   
 
 # -------------------------------------------
 # Display
@@ -97,11 +91,9 @@ display:
   - platform: mipi_dsi
     model: JC1060P470
     id: my_display
-    update_interval: never
+    update_interval: 17ms
     reset_pin:
       number: GPIO05
-    rotation: 0
-    auto_clear_enabled: false
     hsync_pulse_width: 20
 
 lvgl:
