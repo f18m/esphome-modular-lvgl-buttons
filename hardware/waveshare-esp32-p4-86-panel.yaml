@@ -17,6 +17,7 @@ esp32:
   cpu_frequency: 400MHz
 
 psram:
+  mode: hex
   speed: 200MHz
 
 preferences:

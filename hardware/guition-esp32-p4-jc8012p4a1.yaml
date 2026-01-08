@@ -28,10 +28,15 @@ esp_ldo:
     voltage: 2.5V
 
 psram:
+  mode: hex
   speed: 200MHz
   
 preferences:
   flash_write_interval: 5min
+
+#-------------------------------------------
+# Network hardware
+#-------------------------------------------  
   
 esp32_hosted:
   variant: ESP32C6
