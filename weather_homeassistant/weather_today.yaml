@@ -3,7 +3,42 @@
 #
 # vars:
 #   size: icon size (e.g., 200)
+#   weather_entity: 
+#   weather_summary: 
 
+text_sensor:
+  - platform: homeassistant
+    entity_id: ${weather_entity | default("weather.home")}
+    id: weather_condition
+    on_value:
+        then: !include { file: weather_icons_update.yaml, vars: { size: "${size}", id: weather_condition_icon, input_id: weather_condition  } }
+
+  - platform: homeassistant
+    entity_id: ${weather_entity | default("weather.home")}
+    attribute: temperature
+    id: outdoor_temperature
+    on_value:
+        then:
+          # Update weather_condition
+          - lvgl.label.update:
+              id: weather_temperature_today
+              text:
+                format: "%s°"
+                args: [ 'id(outdoor_temperature).state.c_str()' ]
+
+  - platform: homeassistant
+    entity_id: ${weather_summary}
+    id: weather_summary
+    on_value:
+        then:
+          # Update weather summary
+          - lvgl.label.update:
+              id: weather_summary_today
+              text:
+                format: "%s"
+                args: [ 'id(weather_summary).state.c_str()' ]
+
+                
 # Weather icons - included automatically
 image:
   rgb565:
@@ -70,36 +105,4 @@ image:
 
       - file: esphome-modular-lvgl-buttons/weather_homeassistant/assets/images/circle-slash.svg
         id: unavailable_${size}
-        resize: ${size}x${size}
-
-text_sensor:
-  - platform: homeassistant
-    entity_id: weather.home
-    id: weather_condition
-    on_value:
-        then:  !include { file: weather_icons_update.yaml, vars: { size: "${size}", id: weather_condition_icon, input_id: weather_condition  } }
-
-  - platform: homeassistant
-    entity_id: weather.home
-    attribute: temperature
-    id: temperature
-    on_value:
-        then:
-          # Update weather_condition
-          - lvgl.label.update:
-              id: weather_temperature_today
-              text:
-                format: "%s°"
-                args: [ 'id(temperature).state.c_str()' ]
-
-  - platform: homeassistant
-    entity_id: ${weather_summary | default("sensor.home_condition_day_0")}
-    id: weather_summary_sensor
-    on_value:
-        then:
-          # Update weather summary
-          - lvgl.label.update:
-              id: weather_summary_today
-              text:
-                format: "%s"
-                args: [ 'id(weather_summary_sensor).state.c_str()' ]
+        resize: ${size}x${size}                

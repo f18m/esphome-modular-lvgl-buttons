@@ -43,10 +43,14 @@ esphome:
 logger:
   level: debug
 
+api:
+  on_client_connected:
+    - script.execute: time_update
+
 time:
   - platform: homeassistant
     id: system_time
-          
+
 packages:
   # Generic configuration for ESP32 screens
   # All the colors
@@ -58,7 +62,8 @@ packages:
   # Some basic sensors
   sensors: !include esphome-modular-lvgl-buttons/sensors/sensors_base-SDL.yaml
   # Styles + Themes
-  theme_style: !include esphome-modular-lvgl-buttons/common/theme_style_debug.yaml
+  # theme_style: !include esphome-modular-lvgl-buttons/common/theme_style_debug.yaml
+  theme_style: !include esphome-modular-lvgl-buttons/common/theme_style.yaml  
 
   # Harware description file
   hardware: !include esphome-modular-lvgl-buttons/hardware/SDL-lvgl.yaml
@@ -79,7 +84,9 @@ packages:
   weather_today_200: !include
     file: esphome-modular-lvgl-buttons/weather_homeassistant/weather_today.yaml
     vars:
-      size: 200
+      size: 100
+      weather_entity: weather.home
+      weather_summary: sensor.home_hourly_summary
 
 # Styles for Weather forcast
 .forcast_styles:
@@ -89,7 +96,7 @@ packages:
       bg_color: gray50
       radius: 3
       pad_top: 2
-      pad_bottom : 2
+      pad_bottom: 2
       layout:
         type: flex
         flex_flow: COLUMN
@@ -114,8 +121,8 @@ script:
   - id: time_update
     then:
       - lvgl.label.update:
-          id: week_day
-          text: !lambda 'return id(system_time).now().strftime("%A");'  # Weekday
+          id: current_time
+          text: !lambda 'return id(system_time).now().strftime("%l:%M");'  # 12-hour format, no am/pm
       - lvgl.label.update:
           id: month_day
           text: !lambda |- # Month Day
@@ -126,79 +133,95 @@ script:
             return {strftime_buf};
 
 lvgl:
-# Main Page
   pages:
-      - id: main_page
-        width: 100%
-        bg_color: White
-        widgets:
-          - obj:
-              height: SIZE_CONTENT
-              width: SIZE_CONTENT
-              x:  165
-              y: -10
+    - id: main_page
+      layout: 4x4
+      styles: page_style
+      <<: !include esphome-modular-lvgl-buttons/widgets/swipe_navigation.yaml
+      bg_color: White
+      widgets:
+          - container:
+              grid_cell_x_align: stretch
+              grid_cell_y_align: stretch
+              grid_cell_row_pos: 0
+              grid_cell_column_pos: 0
+              grid_cell_row_span: 1
+              grid_cell_column_span: 2
+              # outline_width: 1   # debug code - This is for visualizing boundries remove for production
+              # outline_color: red # debug code - This is for visualizing boundries remove for production
+              widgets:
+                - label:
+                    text: "12:00"
+                    id: current_time
+                    align: top_mid
+                    text_align: center
+                    text_font: nunito_72
+                - label:
+                    text: "September 19"
+                    id: month_day
+                    align: bottom_mid
+                    text_font: nunito_20
+                    text_align: center
+
+          - container:
+              grid_cell_x_align: stretch
+              grid_cell_y_align: stretch
+              grid_cell_row_pos: 1
+              grid_cell_column_pos: 0
+              grid_cell_row_span: 1
+              grid_cell_column_span: 1
+              # outline_width: 1   # debug code - This is for visualizing boundries remove for production
+              # outline_color: red # debug code - This is for visualizing boundries remove for production
+              widgets:
+                - label:
+                    text: "---°"
+                    id: weather_temperature_today
+                    align: center
+                    text_align: center
+                    text_font: nunito_72
+
+          - container:
+              grid_cell_x_align: stretch
+              grid_cell_y_align: stretch
+              grid_cell_row_pos: 1
+              grid_cell_column_pos: 1
+              grid_cell_row_span: 1
+              grid_cell_column_span: 1
+              # outline_width: 1   # debug code - This is for visualizing boundries remove for production
+              # outline_color: red # debug code - This is for visualizing boundries remove for production
               widgets:
                 - image:
-                   src: unknown_200
-                   id: weather_condition_icon
-          - obj:
-                width: 320
-                height: 300
-                x: +2
-                pad_all: 0
-                bg_opa: TRANSP
-                layout:
-                  pad_column: 0
-                  pad_row: 0
-                  type: GRID
-                  grid_rows: [ content, content, content, content ]
-                  grid_columns: [320 ]
-                widgets:
-                  - label:
-                      height: SIZE_CONTENT
-                      width: SIZE_CONTENT
-                      text: "Wednesday"
-                      id: week_day
-                      text_font: nunito_48
-                      text_align: LEFT
-                      grid_cell_row_pos: 0
-                      grid_cell_column_pos: 0
-                  - label:
-                      text: "September 19"
-                      id: month_day
-                      text_font: nunito_24
-                      text_align: LEFT
-                      grid_cell_row_pos: 1
-                      grid_cell_column_pos: 0
-                  - label:
-                      text: "100°"
-                      id: weather_temperature_today
-                      text_font: nunito_72
-                      text_align: LEFT
-                      grid_cell_row_pos: 2
-                      grid_cell_column_pos: 0
-                  - label:
-                      width: 320
-                      height: 90
-                      text: "Generic weather forecast: Weather will be lovely today. Very Sunny. You will love it."
-                      id: weather_condition_today
-                      long_mode: wrap
-                      scrollable: true
-                      text_font: nunito_20
-                      text_align: LEFT
-                      grid_cell_row_pos: 3
-                      grid_cell_column_pos: 0
+                    src: unknown_100
+                    id: weather_condition_icon
+                    align: center
+ 
+          - container:
+              grid_cell_x_align: stretch
+              grid_cell_y_align: stretch
+              grid_cell_row_pos: 1
+              grid_cell_column_pos: 2
+              grid_cell_row_span: 1
+              grid_cell_column_span: 2
+              # outline_width: 1   # debug code - This is for visualizing boundries remove for production
+              # outline_color: red # debug code - This is for visualizing boundries remove for production
+              widgets:
+                - label:
+                    text: "Loading..."
+                    id: weather_summary_today
+                    text_font: nunito_24
+                    long_mode: wrap
+                    width: 100%
 
-          - obj:
-              y: +306
-              width: SIZE_CONTENT
-              height: SIZE_CONTENT
-              layout:
-                type: GRID
-                grid_rows: [ content ]
-                grid_columns: [ 80, 80, 80, 80 ]
-                pad_column: 4
-                pad_row: 0
+          - container:
+              grid_cell_x_align: stretch
+              grid_cell_y_align: stretch
+              grid_cell_row_pos: 2
+              grid_cell_column_pos: 0
+              grid_cell_row_span: 2
+              grid_cell_column_span: 4
+              # outline_width: 1   # debug code - This is for visualizing boundries remove for production
+              # outline_color: red # debug code - This is for visualizing boundries remove for production
+              layout: 1x4
               widgets:
                   - obj:
                       <<: *forcast_obj_base
@@ -284,3 +307,6 @@ lvgl:
                               id: forecast_temperature_lo_3
                               <<: *forcast_label_base_lo
                               text: "---°"
+
+
+
