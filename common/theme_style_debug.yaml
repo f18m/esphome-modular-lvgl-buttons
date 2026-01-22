@@ -10,6 +10,7 @@ lvgl:
       radius: 0
       scrollable: false      
       bg_opa: TRANSP
+      bg_color: black
       outline_width: 1
       outline_color: red
     label:
@@ -53,9 +54,7 @@ lvgl:
       scrollbar_mode: "OFF"
       text_font: $text_font
       text_color: $label_on_color
-      align: center
-      outline_width: 1
-      outline_color: red       
+      align: center      
 
 select:
   - platform: template

@@ -125,6 +125,25 @@ packages:
       light_entity: "light.athom_rgb_light_d93662_rgb_light_strip"
       widget_name: "button_4"
 
+  # Add a dimmer light
+  button_5: !include
+    file: esphome-modular-lvgl-buttons/buttons/dimmer_light_button.yaml
+    vars:
+      uid: button_5
+      row: 2
+      column: 1
+      row_span: 2 # optional make a button bigger then one cell
+      text: RGB light 2
+      icon: $mdi_string_lights
+      entity_id: light.athom_rgb_light_d93662_rgb_light_strip
+
+  button_5_page: !include
+    file: esphome-modular-lvgl-buttons/pages/light_color.yaml
+    vars:
+      light_entity: "light.athom_rgb_light_d93662_rgb_light_strip"
+      widget_name: "button_5"
+
+
 
 # This is the main LVGL section. We start with a simple grid.
 lvgl:
@@ -160,19 +179,24 @@ font:
     size: 40
     bpp: 8
     glyphs: [
-      $mdi_lightbulb,  # mdi-lightbulb
-      $mdi_ceiling_light,  # mdi-ceiling-light
-      $mdi_lamp,  # mdi-lamp
-      $mdi_floor_lamp,  # mdi-floor-lamp
-      $mdi_string_lights,  # mdi-string-lights
-      $mdi_track_light,  # mdi-track-light
-      $mdi_bulkhead_light,  # mdi-bulkhead_light
-      $mdi_led_strip,  # mdi-led-strip
-      $mdi_coach_lamp,  # mdi-coach-lamp
-      $mdi_ceiling_fan_light,  # mdi-ceiling-fan-light
-      $mdi_bed,  # mdi-bed
-      $mdi_white_balance_sunny,  # mdi-white-balance-sunny
-      $mdi_brightness_6,  # mdi-brightness-6
-      $mdi_home,
-      $mdi_information_box,
+      $mdi_bed,  # mdi-bed - bedroom icon
+      $mdi_brightness_6,  # mdi-brightness-6 - brightness slider icon
+      $mdi_bulkhead_light,  # mdi-bulkhead-light - bulkhead fixture
+      $mdi_ceiling_fan_light,  # mdi-ceiling-fan-light - ceiling fan with light
+      $mdi_ceiling_light,  # mdi-ceiling-light - ceiling fixture
+      $mdi_chevron_down,  # mdi-chevron-down - close/collapse button
+      $mdi_chevron_up,  # mdi-chevron-up - back/expand button
+      $mdi_circle_opacity,  # mdi-circle-opacity - saturation slider icon
+      $mdi_coach_lamp,  # mdi-coach-lamp - outdoor coach light
+      $mdi_eyedropper,  # mdi-eyedropper - spectrum mode toggle
+      $mdi_floor_lamp,  # mdi-floor-lamp - floor lamp
+      $mdi_grid,  # mdi-grid - grid mode toggle
+      $mdi_home,  # mdi-home - home/back navigation
+      $mdi_information_box,  # mdi-information-box - info screen
+      $mdi_lamp,  # mdi-lamp - table lamp
+      $mdi_led_strip,  # mdi-led-strip - LED strip light
+      $mdi_lightbulb,  # mdi-lightbulb - generic bulb icon
+      $mdi_string_lights,  # mdi-string-lights - decorative string lights
+      $mdi_track_light,  # mdi-track-light - track lighting
+      $mdi_white_balance_sunny,  # mdi-white-balance-sunny - color temp/sun icon
     ]

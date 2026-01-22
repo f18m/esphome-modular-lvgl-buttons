@@ -10,6 +10,7 @@ lvgl:
       radius: 0
       scrollable: false      
       bg_opa: TRANSP
+      bg_color: black
       # outline_width: 1
       # outline_color: red
     label:
