@@ -12,7 +12,7 @@ A modular library for building beautiful, touch-enabled control panels using ESP
 - **Home Assistant Integration** - Seamless control of your smart home devices
 - **Multiple Screen Sizes** - Support for displays from 2.8" to 7.0"
 - **Pre-built Components** - Ready-to-use buttons, pages, widgets, and sensors
-- **Weather Display** - 4-day forecast and current conditions from Home Assistant
+- **Weather Display** - 4-day weather forecast and current conditions from Home Assistant
 - **Tide Information** - NOAA tide and buoy data integration
 - **Solar Monitoring** - Solar panel monitoring widgets
 - **Boot Screen** - Professional loading screen with HA connection status
@@ -45,13 +45,14 @@ A modular library for building beautiful, touch-enabled control panels using ESP
 
 ### Waveshare Displays
 
-| Model | Size | Resolution | Touch | Official Link |
-|-------|------|------------|-------|---------------|
-| `ESP32-S3-Touch-LCD-2.8c` | 2.8″ | 240×320 | Capacitive | [Waveshare](https://www.waveshare.com/esp32-s3-touch-lcd-2.8c.htm) |
-| `ESP32-S3-Touch-LCD-4.3` | 4.3″ | 800×480 | Capacitive | [Waveshare](https://www.waveshare.com/wiki/ESP32-S3-Touch-LCD-4.3) |
-| `ESP32-S3-Touch-LCD-4.3B` | 4.3″ | 800×480 | Capacitive | [Waveshare](https://www.waveshare.com/wiki/ESP32-S3-Touch-LCD-4.3B) |
-| `ESP32-S3-Touch-LCD-4B` | 4.0″ | 480×480 | Capacitive | [Waveshare](https://www.waveshare.com/wiki/ESP32-S3-Touch-LCD-4B) |
-| `ESP32-S3-Touch-LCD-7` | 7.0″ | 800×480 | Capacitive | [Waveshare](https://www.waveshare.com/esp32-s3-touch-lcd-7.htm) |
+| Model | Size | Resolution | Touch | Features | Link |
+|-------|------|------------|-------|----------|------|
+| `ESP32-S3-Touch-LCD-7` | 7.0" | 800×480 | Capacitive | USB-C | [Waveshare](https://www.waveshare.com/esp32-s3-touch-lcd-7.htm) |
+| `ESP32-S3-Touch-LCD-7B` | 7.0" | 800×480 | Capacitive | Variant B, USB-C | Hardware config included |
+| `ESP32-S3-Touch-LCD-4.3` | 4.3" | 800×480 | Capacitive | USB-C | Hardware config included |
+| `ESP32-S3-Touch-LCD-2.8C` | 2.8" | 320×240 | Capacitive | USB-C | Hardware config included |
+| `ESP32-P4-WiFi6-Touch-LCD-7B` | 7.0" | 800×480 | Capacitive | ESP32-P4, WiFi 6, USB-C | Hardware config included |
+| `ESP32-P4-86-Panel` | 4.0" | 480×480 | Capacitive | ESP32-P4 based, 86mm panel form factor | Hardware config included |
 
 ### Elecrow Displays
 
