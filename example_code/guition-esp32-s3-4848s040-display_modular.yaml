@@ -157,6 +157,10 @@ lvgl:
                     text_color: white
                     text: "Cell 3,3"
   
+# -------------------------------------------------------------------------
+# Fonts and graphics
+# -------------------------------------------------------------------------
+  
 # If you want to use other icons add them to the list here
 font:
   # http://materialdesignicons.com/cdn/7.4.47/
