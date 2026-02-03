@@ -4,6 +4,9 @@
 # Wiki: https://www.waveshare.com/wiki/ESP32-P4-WIFI6-Touch-LCD-10.1
 ---
 
+
+
+
 substitutions:
   # Screen Size (portrait orientation - 10.1" display)
   screen_height: 1280
@@ -60,6 +63,7 @@ touchscreen:
   - platform: gt911
     id: my_touchscreen
     i2c_id: bus_a
+    update_interval: 50ms
     transform:
       swap_xy: false
       mirror_x: false
@@ -102,6 +106,11 @@ display:
   - platform: mipi_dsi
     id: main_display
     model: WAVESHARE-P4-NANO-10.1
+    reset_pin:
+      number: GPIO27
+    rotation: 0
+    update_interval: never
+    auto_clear_enabled: false
     dimensions:
       width: 800
       height: 1280
