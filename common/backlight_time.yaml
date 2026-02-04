@@ -36,6 +36,11 @@ time:
   - platform: homeassistant
     id: system_time
     on_time_sync:
+      - logger.log:
+          level: INFO
+          format: "Update time display on boot"
+      - script.execute: time_update
+      
       # Update last restart time (only once)
       - if:
           condition:
@@ -44,8 +49,12 @@ time:
             - text_sensor.template.publish:
                 id: device_last_restart
                 state: !lambda 'return id(system_time).now().strftime("%a %d %b %Y - %I:%M:%S %p");'
-      # Set brightness mode on boot
+
+      - logger.log:
+          level: INFO
+          format: "Setting brightness on mode boot"
       - script.execute: set_brightness_mode_on_boot
+
     on_time:
       # Trigger night mode at configured time
       - seconds: 0
@@ -65,7 +74,9 @@ lvgl:
   on_idle:
     timeout: ${touchscreen_idle_timeout}
     then:
-      - logger.log: "LVGL is idle"
+      - logger.log:
+          level: INFO
+          format: "LVGL is idle"
       - script.execute: apply_brightness_mode
 
 # Wake on screen touch - extends the touchscreen defined in hardware file
@@ -73,7 +84,9 @@ touchscreen:
   - id: !extend my_touchscreen
     on_touch:
       then:
-        - logger.log: "LVGL is active"
+        - logger.log:
+            level: INFO
+            format: "LVGL is active"
         - lvgl.resume
         - lvgl.widget.redraw
         - script.execute: apply_brightness_mode
@@ -134,11 +147,16 @@ script:
   # ─────────────────────────────────────────────────────────────────────────────
   - id: set_brightness_mode_on_boot
     then:
+      - logger.log:
+          level: INFO
+          format: "Setting brightness mode on boot"
       - if:
           condition:
             sun.is_above_horizon:
           then:
-            - logger.log: "Boot: Sun is up - Day mode"
+            - logger.log:
+                level: INFO
+                format: "Boot: Sun is up - Day mode"
             - select.set:
                 id: brightness_mode
                 option: "Day"
@@ -150,16 +168,24 @@ script:
                     auto now = id(system_time).now();
                     int current = now.hour * 60 + now.minute;
                     int night = ${touchscreen_night_hour} * 60 + ${touchscreen_night_minute};
-                    // Night if current time >= night_hour
-                    // OR if it's early morning (sun down but before night_hour means we crossed midnight)
+                    // Special case: if night_hour is midnight (0), use AM/PM as divider
+                    // Evening = PM hours (12-23), Night = AM hours (0-11)
+                    if (night == 0) {
+                      return now.hour < 12;
+                    }
+                    // Otherwise: Night if past night_hour OR early morning (crossed midnight)
                     return current >= night || now.hour < 12;
                 then:
-                  - logger.log: "Boot: Night mode"
+                  - logger.log:
+                      level: INFO
+                      format: "Boot: Night mode"
                   - select.set:
                       id: brightness_mode
                       option: "Night"
                 else:
-                  - logger.log: "Boot: Evening mode"
+                  - logger.log:
+                      level: INFO
+                      format: "Boot: Evening mode"
                   - select.set:
                       id: brightness_mode
                       option: "Evening"

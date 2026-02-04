@@ -1,0 +1,128 @@
+# Media Player and Voice Assistant
+# A DAC and microphone are required for this
+---
+
+# ===== Media Player =====
+media_player:
+  - platform: speaker
+    name: "Media Player"
+    id: speaker_media_player
+    codec_support_enabled: true
+    # buffer_size: 2000000
+    # task_stack_in_psram: true
+    volume_min: 0.5
+    volume_max: 0.75
+    volume_increment: 0.05
+    announcement_pipeline:
+      speaker: announcement_resampling_speaker
+      format: FLAC  # FLAC is the least processor intensive codec
+      sample_rate: 48000
+      num_channels: 1
+    media_pipeline:
+      speaker: media_resampling_speaker
+      format: FLAC
+      num_channels: 2
+      sample_rate: 48000
+    on_announcement:
+      - if:
+          condition:
+            - microphone.is_capturing:
+          then:
+            - micro_wake_word.stop
+            - voice_assistant.stop
+      - mixer_speaker.apply_ducking:
+          id: media_mixing_input
+          decibel_reduction: 20
+          duration: 0.0s
+      - switch.turn_on: audio_amplifier
+      - delay: 100ms
+    on_state:
+      if:
+        condition:
+          and:
+            - not:
+                voice_assistant.is_running:
+            - not:
+                media_player.is_announcing:
+        then:
+          - mixer_speaker.apply_ducking:
+              id: media_mixing_input
+              decibel_reduction: 0
+              duration: 1.0s
+    on_play:
+      - logger.log: "Media player started playing, disabling microphone"
+      - switch.turn_on: audio_amplifier
+      - delay: 100ms
+      - micro_wake_word.stop
+      - voice_assistant.stop
+    on_idle:
+      - delay: 100ms
+      - switch.turn_off: audio_amplifier
+      - if:
+          condition:
+            not:
+              voice_assistant.is_running:
+          then:
+            - micro_wake_word.start
+
+
+# ===== Voice Assistant =====
+sensor:
+  - platform: template
+    name: "Voice Assistant State"
+    lambda: |-
+      if (id(esp32_microphone).is_running()) {
+        return 1;
+      } else {
+        return 0;
+      }
+    update_interval: 2s
+
+text_sensor:
+  - platform: template
+    name: "Voice Assistant Status"
+    id: voice_status
+    update_interval: 5s
+    lambda: |-
+      if (id(esp32_microphone).is_running()) {
+        return {"Listening"};
+      } else {
+        return {"Idle"};
+      }
+
+micro_wake_word:
+  id: my_wake_word
+  models:
+    - model: alexa
+  on_wake_word_detected:
+    then:
+      - logger.log: "Wake word detected"
+      - voice_assistant.start:
+          wake_word: !lambda return wake_word;
+
+voice_assistant:
+  microphone: esp32_microphone
+  media_player: speaker_media_player
+  micro_wake_word: my_wake_word
+  noise_suppression_level: 2
+  auto_gain: 31dBFS
+  volume_multiplier: 2.0
+  conversation_timeout: 300s
+  on_end:
+    # Wait a short amount of time to see if an announcement starts
+    - wait_until:
+        condition:
+          - media_player.is_announcing:
+        timeout: 0.5s
+    # Announcement is finished and the I2S bus is free
+    - wait_until:
+        - and:
+            - not:
+                media_player.is_announcing:
+            - not:
+                media_player.is_playing:
+    - micro_wake_word.start:
+  on_client_connected:
+    - micro_wake_word.start:
+  on_client_disconnected:
+    - micro_wake_word.stop:

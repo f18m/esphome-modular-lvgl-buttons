@@ -25,8 +25,8 @@ substitutions:
 
 esphome:
   name: "guition-esp32-p4-jc4880p443"
-  friendly_name: "Guition ESP32-P4-jc4880p443"
-  comment: "Guition ESP32-P4-JC4880P443 480px * 800px Smart Screen"
+  friendly_name: "Guition ESP32-P4 JC4880P443"
+  comment: "Guition ESP32-P4 JC4880P443 480px * 800px Smart Screen"
   on_boot:
     - priority: 400
       then:
