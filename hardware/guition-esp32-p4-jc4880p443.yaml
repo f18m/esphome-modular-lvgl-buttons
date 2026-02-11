@@ -14,29 +14,28 @@ esphome:
     version: "1.0"
 
 esp32:
-  variant: esp32p4
-  flash_size: 16MB
+  board: esp32-p4-evboard
+  flash_size: 16Mb
   cpu_frequency: 360MHz
   framework:
     type: esp-idf
     advanced:
-      enable_idf_experimental_features: true
+      enable_idf_experimental_features: yes
+    sdkconfig_options:
+      CONFIG_SPIRAM_XIP_FROM_PSRAM: y
 
 esp_ldo:
   - channel: 3
     voltage: 2.5V
 
 psram:
-  mode: hex
   speed: 200MHz
 
 preferences:
   flash_write_interval: 5min
 
-#-------------------------------------------
-# Network hardware
-#-------------------------------------------  
 esp32_hosted:
+  active_high: true
   variant: ESP32C6
   reset_pin: GPIO54
   cmd_pin: GPIO19
@@ -45,7 +44,6 @@ esp32_hosted:
   d1_pin: GPIO15
   d2_pin: GPIO16
   d3_pin: GPIO17
-  active_high: true  
 
 # -------------------------------------------
 # Internal outputs
@@ -55,6 +53,8 @@ output:
   - platform: ledc
     pin: GPIO23  
     id: gpio_backlight_pwm
+    frequency: 100Hz
+    inverted: false
 
 light:
   - platform: monochromatic
@@ -62,7 +62,21 @@ light:
     name: Display Backlight
     icon: mdi:lightbulb-on
     id: display_backlight
+    entity_category: config
     restore_mode: ALWAYS_ON
+    default_transition_length: 250ms
+
+# -------------------------------------------
+# Speaker Amplifier Enable
+# -------------------------------------------
+switch:
+  - platform: gpio
+    id: my_amp
+    name: Speaker Enable
+    icon: "mdi:speaker"
+    entity_category: config
+    pin: GPIO11
+    restore_mode: RESTORE_DEFAULT_ON
 
 # -------------------------------------------
 # i2c bus
@@ -81,22 +95,11 @@ touchscreen:
   - platform: gt911
     i2c_id: bus_a
     id: my_touchscreen
-    reset_pin: GPIO3
-    transform: #This is for 90 degree display rotation
+    display: device_display
+    transform:
       swap_xy: true
       mirror_x: false
       mirror_y: true
-    # on_touch:
-      # - logger.log:
-            # format: Touch at (%d, %d)
-            # args: [touch.x, touch.y]
-      # - lambda: |-
-            # ESP_LOGI("cal", "x=%d, y=%d, x_raw=%d, y_raw=%0d",
-                # touch.x,
-                # touch.y,
-                # touch.x_raw,
-                # touch.y_raw
-                # );
 
 # -------------------------------------------
 # Display
@@ -105,8 +108,12 @@ display:
   - platform: mipi_dsi
     id: device_display
     model: JC4880P443
-    byte_order: little_endian
+    update_interval: never
+    auto_clear_enabled: false
     rotation: 90
+    dimensions:
+      width: 480
+      height: 800
 
 # Special LVGL settings required for this display  
 lvgl:
@@ -115,47 +122,62 @@ lvgl:
 # -------------------------------------------
 # Audio - speaker/mic
 # ------------------------------------------- 
+i2s_audio:
+  - id: i2s_audio_bus
+    i2s_lrclk_pin: GPIO10
+    i2s_bclk_pin: GPIO12
+    i2s_mclk_pin: GPIO13
+
 audio_dac:
   - platform: es8311
-    id: esp7311_dac
-    address: 0x18
+    id: my_dac
     i2c_id: bus_a
+    address: 0x18
 
-i2s_audio:
-  - id: i2s_bus
-    i2s_lrclk_pin: GPIO10 # WS / LRCK
-    i2s_bclk_pin: GPIO12  # BCLK
-    i2s_mclk_pin: GPIO13  # ES8311 usually requires a Master Clock
+audio_adc:
+  - platform: es7210
+    id: my_adc
+    i2c_id: bus_a
+    address: 0x36
 
 microphone:
   - platform: i2s_audio
-    id: es8311_mic
-    i2s_audio_id: i2s_bus
-    i2s_din_pin: GPIO48  # Data In from the Codec
+    id: my_microphone
+    i2s_audio_id: i2s_audio_bus
+    i2s_din_pin: GPIO48
+    sample_rate: 16000
+    bits_per_sample: 16bit
     adc_type: external
-    pdm: false           # ES8311 uses standard I2S, not PDM
-    channel: left
 
 speaker:
   - platform: i2s_audio
-    id: es8311_hardware_out
-    i2s_audio_id: i2s_bus
+    id: my_speaker
+    i2s_audio_id: i2s_audio_bus
     i2s_dout_pin: GPIO9
+    audio_dac: my_dac
     dac_type: external
-    audio_dac: esp7311_dac
-  - platform: mixer
-    id: audio_mixer
-    output_speaker: es8311_hardware_out
-    source_speakers:
-      - id: spk_announcement
-      - id: spk_media
+    channel: mono
+    buffer_duration: 100ms
+    bits_per_sample: 16bit
+    sample_rate: 48000
 
-media_player:
-  - platform: speaker
-    name: "XL Speaker"
-    id: xl_media_player
-    # This section is now mandatory for the 'speaker' platform
-    announcement_pipeline:
-      speaker: spk_announcement
-    media_pipeline:
-      speaker: spk_media
+  - platform: mixer
+    id: mixing_speaker
+    output_speaker: my_speaker
+    source_speakers:
+      - id: announcement_mixing_input
+        timeout: never
+      - id: media_mixing_input
+        timeout: never
+
+  - platform: resampler
+    id: announcement_resampling_speaker
+    output_speaker: announcement_mixing_input
+    sample_rate: 48000
+    bits_per_sample: 16
+
+  - platform: resampler
+    id: media_resampling_speaker
+    output_speaker: media_mixing_input
+    sample_rate: 48000
+    bits_per_sample: 16

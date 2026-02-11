@@ -76,6 +76,8 @@ packages:
 
   # Harware description file
   hardware: !include esphome-modular-lvgl-buttons/hardware/guition-esp32-p4-jc4880p443.yaml
+  # This hardware support media playback and voice assistant. Lets add in code for them!
+  media_player_and_voice: !include esphome-modular-lvgl-buttons/hardware/media_player-voice_assistant.yaml
   
   # Basic boot screen with ESPHome logo and device diagnostic info
   loading_screen: !include esphome-modular-lvgl-buttons/pages/loading_480px.yaml
@@ -138,7 +140,6 @@ packages:
 
 # This is the main LVGL section. We start with a simple grid.
 lvgl:
-  buffer_size: 100%
   pages:
     - id: main_page
       layout: 4x5
