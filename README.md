@@ -10,15 +10,14 @@ A modular library for building beautiful, touch-enabled control panels using ESP
 
 - **Modular Design** - Mix and match components to build your perfect interface
 - **Home Assistant Integration** - Seamless control of your smart home devices
-- **Multiple Screen Sizes** - Support for displays from 2.8" to 7.0"
+- **Multiple Screen Sizes** - Support for displays from 2.8" to 10"
 - **Pre-built Components** - Ready-to-use buttons, pages, widgets, and sensors
-- **Weather Display** - 4-day forecast and current conditions from Home Assistant
-- **Tide Information** - NOAA tide and buoy data integration
+- **Weather Display** - 4-day forecast and current conditions from Home Assistant or direct from Pirate Weather
+- **Tide Information** - NOAA tide integration
 - **Solar Monitoring** - Solar panel monitoring widgets
 - **Boot Screen** - Professional loading screen with HA connection status
 - **Swipe Navigation** - Navigate between pages with touch gestures
 - **Light Controls** - Dimming, color temperature, and RGB color picker support
-- **Canvas Widgets** - Dynamic LVGL canvas-based color wheels and graphics
 
 ## 📱 Supported Screens
 
