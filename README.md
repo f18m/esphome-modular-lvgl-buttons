@@ -4,7 +4,7 @@
 [![ESPHome](https://img.shields.io/badge/ESPHome-2025.x-blue)](https://esphome.io)
 [![Home Assistant](https://img.shields.io/badge/Home%20Assistant-Integration-41BDF5)](https://www.home-assistant.io/)
 
-A modular library for building beautiful, touch-enabled control panels using ESPHome and LVGL on affordable ESP32 touchscreen devices. Perfect for smart home dashboards, room controllers, lighting control, and information displays.
+A modular library for building beautiful, touch-enabled control panels using ESPHome and LVGL on ESP32 based touchscreen devices. Perfect for smart home dashboards, room controllers, lighting control, and information displays.
 
 ## ✨ Features
 
