@@ -144,20 +144,20 @@ i2s_audio:
 
 audio_dac:
   - platform: es8311
-    id: my_dac
+    id: es8311_dac
     i2c_id: bus_a
     address: 0x18
 
 audio_adc:
   - platform: es7210
-    id: my_adc
+    id: es7210_adc
     i2c_id: bus_a
     address: 0x40
 
 # ===== Microphone =====
 microphone:
   - platform: i2s_audio
-    id: my_microphone
+    id: esp32_microphone
     i2s_audio_id: audio_bus
     i2s_din_pin: GPIO11
     sample_rate: 16000
@@ -171,10 +171,10 @@ microphone:
 # ===== Speaker & Audio Pipeline =====
 speaker:
   - platform: i2s_audio
-    id: my_speaker
+    id: esp32_speaker
     i2s_audio_id: audio_bus
     i2s_dout_pin: GPIO9
-    audio_dac: my_dac
+    audio_dac: es8311_dac
     dac_type: external
     channel: mono
     buffer_duration: 100ms
@@ -183,7 +183,7 @@ speaker:
 
   - platform: mixer
     id: mixing_speaker
-    output_speaker: my_speaker
+    output_speaker: esp32_speaker
     source_speakers:
       - id: announcement_mixing_input
         timeout: never
