@@ -1,10 +1,17 @@
+# The Waveshare ESP32-S3-Touch-LCD-3.5B 
+# is a 3.5inch 480x320 touchscreen display with an ESP32-S3 MCU.
+#
+# Schematic: https://files.waveshare.com/wiki/ESP32-S3-Touch-LCD-3.5B/ESP32-S3-Touch-LCD-3.5B-Schematic.pdf
+# Wiki:      https://www.waveshare.com/wiki/ESP32-S3-Touch-LCD-3.5B
+---
+
+
 esphome:
   name: waveshare-esp32-s3-touch
   friendly_name: WaveShare ESP32-S3 Touch LCD 3.5B
   platformio_options:
     board_build.arduino.memory_type: qio_opi
     board_build.flash_mode: qio
-    #board_upload.flash_size: 16MB
 
 # Enable PSRAM
 psram:
@@ -34,8 +41,7 @@ spi:
 
 # Display configuration for AXS15231B
 display:
-  - #platform: qspi_dbi
-    platform: mipi_spi
+  - platform: mipi_spi
     bus_mode: quad
     model: AXS15231
     id: my_display
@@ -44,22 +50,23 @@ display:
     dimensions:
       width: 320
       height: 480
-      #width: 480
-      #height: 320
       offset_width: 0
       offset_height: 0
+    # rotate the screen by 90 degrees as personally I found this screen to be
+    # better suited for an horizontal installation rather than a vertical
+    # install. If you plan to install this vertically, just remove the following
+    # line and the "transform" block in the "touchscreen" section below in this file.
     rotation: 90
     color_order: rgb
-    #brightness: 255
     cs_pin: GPIO12      # LCD_CS
+    # FIXME TO TEST: reset pin should be avail via GPIO expander pin 1
     #reset_pin:
 
-
-# Font configuration
-font:
-  - file: "gfonts://Roboto"
-    id: my_font
-    size: 40
+# # Font configuration
+# font:
+#   - file: "gfonts://Roboto"
+#     id: my_font
+#     size: 40
 
 # Backlight control (LCD_BL)
 output:
@@ -95,15 +102,24 @@ touchscreen:
     display: my_display
     id: my_touchscreen
     i2c_id: touch_i2c
+
+    # FIXME TO TEST: the interrupt line for the touch screen should enable
+    # better/faster touch interaction. The Interrupt line for touch controller
+    # should be avail under the pin 2 of the pro expander
     update_interval: 10ms    # Poll touchscreen every 10ms (100 Hz)
+
+    # this "transform" block is required to "align" the touch interface
+    # to the 90degrees rotation of the screen (see "display" definition)
     transform:
       swap_xy: true
       mirror_x: false
       mirror_y: true
-    on_update:
-      - lambda: |-
-          for (auto touch: touches)  {
-              if (touch.state <= 2) {
-                ESP_LOGI("Touch points:", "id=%d x=%d, y=%d", touch.id, touch.x, touch.y);
-              }
-          }
+    # Uncomment the following block to log coordinates of touch points:
+    # this is useful to e.g. debug the mirror_x|y configs above
+    # on_update:
+    #   - lambda: |-
+    #       for (auto touch: touches)  {
+    #           if (touch.state <= 2) {
+    #             ESP_LOGI("Touch points:", "id=%d x=%d, y=%d", touch.id, touch.x, touch.y);
+    #           }
+    #       }
